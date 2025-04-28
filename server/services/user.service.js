@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const { foodifyDB } = require("../mongoClient");
+const { ObjectId } = require("mongodb");
 
 const userCollection = foodifyDB.collection("users");
 
@@ -9,7 +10,7 @@ const getAllUsersFromDB = async () => {
 };
 
 const getOneUserFromDB = async (userId) => {
-  const query = { job_id: userId };
+  const query = { _id: new ObjectId(userId) };
   const user = await userCollection.find(query).toArray();
   return user;
 };
@@ -18,7 +19,7 @@ const updateOneUserFromDB = async (userId, userData) => {
   const filter = { _id: new ObjectId(userId) };
   const updateDoc = {
     $set: {
-      role: userData.role,
+      userData,
     },
   };
   const updatedUser = await userCollection.updateOne(filter, updateDoc);
@@ -35,11 +36,10 @@ const insertOneUserFromDB = async (name, email, password, role) => {
     name,
     email,
     password: hashedPassword,
-    role, // 'admin' or 'user'
-    authType: "local",
+    role,
     createdAt: new Date(),
   };
-  await db.collection("users").insertOne(newUser);
+  await userCollection.insertOne(newUser);
 };
 
 const deleteOneUserFromDB = async (id) => {

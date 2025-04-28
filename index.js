@@ -2,6 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const { connectDB } = require("./server/mongoClient");
 const userRouter = require("./server/routes/user.router");
+const foodRouter = require("./server/routes/food.router");
+const orderRouter = require("./server/routes/order.router");
+const cartRouter = require("./server/routes/cart.router");
 require("dotenv").config();
 
 const app = express();
@@ -14,6 +17,9 @@ connectDB().catch(() => console.log("Something went wrong in database..."));
 
 // All Routes
 app.use("/api/v1", userRouter);
+app.use("/api/v1", foodRouter);
+app.use("/api/v1", cartRouter);
+app.use("/api/v1", orderRouter);
 
 // Basic test route
 app.get("/", (req, res) => {

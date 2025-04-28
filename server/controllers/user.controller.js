@@ -3,7 +3,8 @@ const {
   getOneUserFromDB,
   updateOneUserFromDB,
   deleteOneUserFromDB,
-  addUserService,
+  insertOneUserFromDB,
+  makeUserAdminFromDB,
 } = require("../services/user.service");
 
 const getAllUsers = async (req, res) => {
@@ -19,7 +20,7 @@ const getAllUsers = async (req, res) => {
 
 const getOneUser = async (req, res) => {
   try {
-    const userId = req.params.user_id;
+    const userId = req.params.id;
     const user = await getOneUserFromDB(userId);
     res.status(200).json(user);
   } catch (err) {
@@ -31,7 +32,7 @@ const getOneUser = async (req, res) => {
 
 const updateOneUser = async (req, res) => {
   try {
-    const userId = req.params.user_id;
+    const userId = req.params.id;
     const userData = req.body;
     const user = await updateOneUserFromDB(userId, userData);
     res.status(200).json(user);
@@ -45,7 +46,7 @@ const updateOneUser = async (req, res) => {
 const insertOneUser = async (req, res) => {
   const { name, email, password, role = "user" } = req.body;
   try {
-    addUserService(name, email, password, role);
+    insertOneUserFromDB(name, email, password, role);
     res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
@@ -55,7 +56,7 @@ const insertOneUser = async (req, res) => {
 const deleteOneUser = async (req, res) => {
   try {
     const deleted = await deleteOneUserFromDB(req.params.id);
-    if (!deleted) return res.status(404).json({ msg: "User not found" });
+    if (!deleted) return res.status(404).json({ message: "User not found" });
     res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
