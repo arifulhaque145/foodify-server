@@ -43,9 +43,11 @@ const updateOneFood = async (req, res) => {
 };
 
 const insertOneFood = async (req, res) => {
-  const { item, catagory, desc, img, price } = req.body;
+  const { item, catagory, desc, price } = req.body;
+  const image = req.file ? `/uploads/${req.file.filename}` : null;
+
   try {
-    insertOneFoodFromDB(name, email, password, role);
+    insertOneFoodFromDB(item, catagory, desc, image, price);
     res.status(201).json({ message: "Food registered successfully" });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });

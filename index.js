@@ -21,9 +21,28 @@ app.use("/api/v1", foodRouter);
 app.use("/api/v1", cartRouter);
 app.use("/api/v1", orderRouter);
 
+// To access upload images
+app.use("/uploads", express.static("uploads"));
+
 // Basic test route
 app.get("/", (req, res) => {
   res.send("I am here to listen from 5000");
+});
+
+app.post("/payment", async (req, res) => {
+  try {
+    const { amount, currency = "usd" } = req.body;
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount * 100, // convert to cents
+      currency,
+      payment_method_types: ["card"],
+    });
+
+    res.send({ clientSecret: paymentIntent.client_secret });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post("/jwt", (req, res) => {

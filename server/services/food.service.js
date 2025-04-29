@@ -1,4 +1,3 @@
-const bcrypt = require("bcrypt");
 const { foodifyDB } = require("../mongoClient");
 const { ObjectId } = require("mongodb");
 
@@ -26,17 +25,16 @@ const updateOneFoodFromDB = async (foodId, foodData) => {
   return updatedfood;
 };
 
-const insertOneFoodFromDB = async (name, email, password, role) => {
+const insertOneFoodFromDB = async (item, catagory, desc, image, price) => {
   const foodExists = await foodCollection.findOne({ email });
   if (foodExists) return res.status(400).json({ msg: "Food already exists" });
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-
   const newFood = {
-    name,
-    email,
-    password: hashedPassword,
-    role,
+    item,
+    catagory,
+    desc,
+    image,
+    price,
     createdAt: new Date(),
   };
   await foodCollection.insertOne(newFood);

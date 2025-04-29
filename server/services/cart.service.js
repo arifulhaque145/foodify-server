@@ -1,4 +1,3 @@
-const bcrypt = require("bcrypt");
 const { foodifyDB } = require("../mongoClient");
 const { ObjectId } = require("mongodb");
 
@@ -22,7 +21,7 @@ const addItemToCartToDB = async (userId, foodItemId, quantity) => {
 
 const removeCartItemFromDB = async (id) => {
   const result = await cartCollection.deleteOne({
-    _id: new ObjectId(cartItemId),
+    _id: new ObjectId(id),
   });
   return result;
 };

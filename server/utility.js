@@ -1,3 +1,6 @@
+const multer = require("multer");
+const path = require("path");
+
 // Token Verification
 const verifyToken = (req, res, next) => {
   const token = req?.cookies?.token;
@@ -16,4 +19,25 @@ const verifyToken = (req, res, next) => {
   });
 };
 
-module.exports = verifyToken;
+// Storage configuration
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  const ext = path.extname(file.originalname).toLocaleLowerCase();
+  if (ext == ".jpg" || ext === ".jpeg" || ext === ".png") {
+    cb(null, true);
+  } else {
+    cb(new Error("Only JPG, JPEG, PNG images allowed"), false);
+  }
+};
+
+const upload = multer({ storage, fileFilter });
+
+module.exports = { verifyToken, upload };
