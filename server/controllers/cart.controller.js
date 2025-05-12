@@ -3,11 +3,12 @@ const {
   addItemToCartToDB,
   removeCartItemFromDB,
   clearCartFromDB,
+  updateItemCartToDB,
 } = require("../services/cart.service");
 
 const getAllCartItemsByUser = async (req, res) => {
   try {
-    const userEmail = req.query.email;
+    const userEmail = req.query.user;
     const cartItems = await getAllCartItemsByUserFromDB(userEmail);
     res.status(200).json(cartItems);
   } catch (err) {
@@ -18,9 +19,20 @@ const getAllCartItemsByUser = async (req, res) => {
 };
 
 const addItemToCart = async (req, res) => {
-  const { userId, foodItemId, quantity } = req.body;
+  const cartItem = req.body;
   try {
-    addItemToCartToDB(userId, foodItemId, quantity);
+    addItemToCartToDB(cartItem);
+    res.status(201).json({ message: "Cart item added successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+const updateItemToCart = async (req, res) => {
+  const updateData = req.body;
+
+  try {
+    updateItemCartToDB(updateData);
     res.status(201).json({ message: "Cart item added successfully" });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
@@ -30,7 +42,8 @@ const addItemToCart = async (req, res) => {
 const removeCartItem = async (req, res) => {
   try {
     const deleted = await removeCartItemFromDB(req.params.id);
-    if (!deleted) return res.status(404).json({ message: "Food not found" });
+    if (!deleted)
+      return res.status(404).json({ message: "Cart item not found" });
     res.status(201).json({ message: "Cart item removed successfully" });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
@@ -40,7 +53,8 @@ const removeCartItem = async (req, res) => {
 const clearCart = async (req, res) => {
   try {
     const deleted = await clearCartFromDB(req.params.id);
-    if (!deleted) return res.status(404).json({ message: "Food not found" });
+    if (!deleted)
+      return res.status(404).json({ message: "Cart items not found" });
     res.status(201).json({ message: "Cart cleared successfully" });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
@@ -50,6 +64,7 @@ const clearCart = async (req, res) => {
 module.exports = {
   getAllCartItemsByUser,
   addItemToCart,
+  updateItemToCart,
   removeCartItem,
   clearCart,
 };

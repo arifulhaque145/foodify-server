@@ -2,13 +2,15 @@ const {
   getAllOrdersFromDB,
   getOneOrderFromDB,
   updateOneOrderFromDB,
-  insertOneOrderFromDB,
   deleteOneOrderFromDB,
+  insertOneOrderFromDB,
 } = require("../services/order.service");
 
 const getAllOrders = async (req, res) => {
+  const email = req.query.user;
+
   try {
-    const orders = await getAllOrdersFromDB();
+    const orders = await getAllOrdersFromDB(email);
     res.status(200).json(orders);
   } catch (err) {
     res
@@ -43,9 +45,10 @@ const updateOneOrder = async (req, res) => {
 };
 
 const insertOneOrder = async (req, res) => {
-  const { userEmail, items, total_price, desc, img, price } = req.body;
+  const orderItem = req.body;
+
   try {
-    insertOneOrderFromDB(userEmail, items, total_price, desc, img, price);
+    insertOneOrderFromDB(orderItem);
     res.status(201).json({ message: "Order registered successfully" });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });

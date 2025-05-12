@@ -10,9 +10,9 @@ const {
 const foodRouter = express.Router();
 
 foodRouter.get("/food-items", getAllFoods);
-foodRouter.get("/review-items/:id", getOneFood);
-foodRouter.patch("/review-items/:id", updateOneFood);
-foodRouter.delete("/review-items/:id", deleteOneFood);
-foodRouter.post("/review-items/:id", insertOneFood);
+foodRouter.get("/food-items/:id", getOneFood);
+foodRouter.patch("/food-items/:id", updateOneFood);
+foodRouter.delete("/food-items/:id", deleteOneFood);
+foodRouter.post("/food-items/:id", insertOneFood);
 
 module.exports = foodRouter;

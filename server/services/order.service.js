@@ -2,55 +2,44 @@ const bcrypt = require("bcrypt");
 const { foodifyDB } = require("../mongoClient");
 const { ObjectId } = require("mongodb");
 
-const foodCollection = foodifyDB.collection("food-items");
+const orderCollection = foodifyDB.collection("orders");
 
-const getAllFoodsFromDB = async () => {
-  const foods = await foodCollection.find({}).toArray();
+const getAllOrdersFromDB = async (userEmail) => {
+  const foods = await orderCollection.find({ user: userEmail }).toArray();
   return foods;
 };
 
-const getOneFoodFromDB = async (foodId) => {
+const getOneOrderFromDB = async (foodId) => {
   const query = { _id: new ObjectId(foodId) };
-  const food = await foodCollection.find(query).toArray();
+  const food = await orderCollection.find(query).toArray();
   return food;
 };
 
-const updateOneFoodFromDB = async (foodId, foodData) => {
+const updateOneOrderFromDB = async (foodId, foodData) => {
   const filter = { _id: new ObjectId(foodId) };
   const updateDoc = {
     $set: {
       foodData,
     },
   };
-  const updatedfood = await foodCollection.updateOne(filter, updateDoc);
+  const updatedfood = await orderCollection.updateOne(filter, updateDoc);
   return updatedfood;
 };
 
-const insertOneFoodFromDB = async (name, email, password, role) => {
-  const foodExists = await foodCollection.findOne({ email });
-  if (foodExists) return res.status(400).json({ msg: "Food already exists" });
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const newFood = {
-    name,
-    email,
-    password: hashedPassword,
-    role,
-    createdAt: new Date(),
-  };
-  await foodCollection.insertOne(newFood);
+const insertOneOrderFromDB = async (order) => {
+  const result = await orderCollection.insertOne(order);
+  return result;
 };
 
-const deleteOneFoodFromDB = async (id) => {
-  const result = await foodCollection.deleteOne({ _id: new ObjectId(id) });
+const deleteOneOrderFromDB = async (id) => {
+  const result = await orderCollection.deleteOne({ _id: new ObjectId(id) });
   return result;
 };
 
 module.exports = {
-  getAllFoodsFromDB,
-  getOneFoodFromDB,
-  updateOneFoodFromDB,
-  insertOneFoodFromDB,
-  deleteOneFoodFromDB,
+  getAllOrdersFromDB,
+  getOneOrderFromDB,
+  updateOneOrderFromDB,
+  insertOneOrderFromDB,
+  deleteOneOrderFromDB,
 };
