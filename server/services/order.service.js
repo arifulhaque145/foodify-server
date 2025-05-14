@@ -9,10 +9,10 @@ const getAllOrdersFromDB = async (userEmail) => {
   return foods;
 };
 
-const getOneOrderFromDB = async (foodId) => {
-  const query = { _id: new ObjectId(foodId) };
-  const food = await orderCollection.find(query).toArray();
-  return food;
+const getOneOrderFromDB = async (orderId) => {
+  const query = { _id: new ObjectId(orderId) };
+  const order = await orderCollection.find(query).toArray();
+  return order;
 };
 
 const updateOneOrderFromDB = async (foodId, foodData) => {
@@ -31,8 +31,10 @@ const insertOneOrderFromDB = async (order) => {
   return result;
 };
 
-const deleteOneOrderFromDB = async (id) => {
-  const result = await orderCollection.deleteOne({ _id: new ObjectId(id) });
+const deleteOneOrderFromDB = async (orderId) => {
+  const result = await orderCollection.deleteOne({
+    _id: new ObjectId(orderId),
+  });
   return result;
 };
 

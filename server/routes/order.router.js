@@ -10,7 +10,6 @@ const orderRouter = express.Router();
 
 orderRouter.get("/order-items", getAllOrders);
 orderRouter.get("/order-items/:id", getOneOrder);
-// orderRouter.patch("/order-items/:id", updateOneOrder);
 orderRouter.post("/order-items", insertOneOrder);
 orderRouter.delete("/order-items/:id", deleteOneOrder);
 

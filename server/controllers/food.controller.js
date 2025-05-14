@@ -18,8 +18,9 @@ const getAllFoods = async (req, res) => {
 };
 
 const getOneFood = async (req, res) => {
+  const foodId = req.params.id;
+
   try {
-    const foodId = req.params.id;
     const food = await getOneFoodFromDB(foodId);
     res.status(200).json(food);
   } catch (err) {

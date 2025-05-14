@@ -7,8 +7,9 @@ const {
 } = require("../services/cart.service");
 
 const getAllCartItemsByUser = async (req, res) => {
+  const userEmail = req.query.user;
+
   try {
-    const userEmail = req.query.user;
     const cartItems = await getAllCartItemsByUserFromDB(userEmail);
     res.status(200).json(cartItems);
   } catch (err) {
@@ -20,6 +21,7 @@ const getAllCartItemsByUser = async (req, res) => {
 
 const addItemToCart = async (req, res) => {
   const cartItem = req.body;
+
   try {
     addItemToCartToDB(cartItem);
     res.status(201).json({ message: "Cart item added successfully" });
@@ -29,10 +31,11 @@ const addItemToCart = async (req, res) => {
 };
 
 const updateItemToCart = async (req, res) => {
-  const updateData = req.body;
+  const itemId = req.params.id;
+  const quantity = req.body.quantity;
 
   try {
-    updateItemCartToDB(updateData);
+    updateItemCartToDB({ itemId, quantity });
     res.status(201).json({ message: "Cart item added successfully" });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });

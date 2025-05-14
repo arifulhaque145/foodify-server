@@ -59,7 +59,7 @@ const deleteOneOrder = async (req, res) => {
   try {
     const deleted = await deleteOneOrderFromDB(req.params.id);
     if (!deleted) return res.status(404).json({ message: "Order not found" });
-    res.status(201).json({ message: "Order registered successfully" });
+    res.status(201).json({ message: "Order deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }

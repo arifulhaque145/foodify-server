@@ -10,7 +10,7 @@ const getAllFoodsFromDB = async () => {
 
 const getOneFoodFromDB = async (foodId) => {
   const query = { _id: new ObjectId(foodId) };
-  const food = await foodCollection.find(query).toArray();
+  const food = await foodCollection.findOne(query);
   return food;
 };
 

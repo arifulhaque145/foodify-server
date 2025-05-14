@@ -1,9 +1,10 @@
+const { ObjectId } = require("mongodb");
 const { foodifyDB } = require("../mongoClient");
 
-const cartCollection = foodifyDB.collection("cart-items");
+const cartCollection = foodifyDB.collection("carts");
 
 const getAllCartItemsByUserFromDB = async (userEmail) => {
-  const cartItems = await cartCollection.find({ user: userEmail }).toArray();
+  const cartItems = await cartCollection.find({ user: userEmail }).toArray({});
   return cartItems;
 };
 
@@ -12,13 +13,14 @@ const addItemToCartToDB = async (cartItem) => {
     ...cartItem,
     addedAt: new Date(),
   };
+
   const result = await cartCollection.insertOne(newCartItem);
   return result;
 };
 
-const updateItemCartToDB = async (updateData) => {
-  const filter = { _id: `${updateData.id}`, user: updateData.user };
-  const options = { $set: { quantity: updateData.quantity } };
+const updateItemCartToDB = async ({ itemId, quantity }) => {
+  const filter = { _id: `${itemId}` };
+  const options = { $set: { quantity: quantity } };
   const result = await cartCollection.updateOne(filter, options);
   return result;
 };
