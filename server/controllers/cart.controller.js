@@ -43,8 +43,9 @@ const updateItemToCart = async (req, res) => {
 };
 
 const removeCartItem = async (req, res) => {
+  const itemId = req.params.id;
   try {
-    const deleted = await removeCartItemFromDB(req.params.id);
+    const deleted = await removeCartItemFromDB(itemId);
     if (!deleted)
       return res.status(404).json({ message: "Cart item not found" });
     res.status(201).json({ message: "Cart item removed successfully" });
