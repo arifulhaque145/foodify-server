@@ -26,7 +26,7 @@ const updateOneUserFromDB = async (userId, userData) => {
   return updatedUser;
 };
 
-const insertOneUserFromDB = async (name, email, password, role) => {
+const insertOneUserFromDB = async (name, email, password = "f123", role) => {
   const userExists = await userCollection.findOne({ email });
   if (userExists) return res.status(400).json({ msg: "User already exists" });
 
