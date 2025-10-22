@@ -9,25 +9,47 @@ const getAllCartItemsByUserFromDB = async (userEmail) => {
 };
 
 const addItemToCartToDB = async (cartItem) => {
-  const newCartItem = {
-    ...cartItem,
-    addedAt: new Date(),
-  };
+  const { _id, stock, ...rest } = cartItem;
+  const existing = await cartCollection.findOne({ menuId: _id });
 
-  const result = await cartCollection.insertOne(newCartItem);
+  let result;
+
+  if (!existing) {
+    const newCartItem = {
+      menuId: _id,
+      quantity: 1,
+      stock: stock,
+      ...rest,
+      addedAt: new Date(),
+    };
+
+    result = await cartCollection.insertOne(newCartItem);
+  } else {
+    result = await cartCollection.updateOne(
+      { menuId: _id },
+      {
+        $inc: { quantity: 1, stock: -1 },
+        $set: { updatedAt: new Date() },
+      }
+    );
+  }
+
   return result;
 };
 
 const updateItemCartToDB = async ({ itemId, quantity }) => {
-  const filter = { _id: `${itemId}` };
-  const options = { $set: { quantity: quantity } };
-  const result = await cartCollection.updateOne(filter, options);
+  const result = await cartCollection.updateOne(
+    { _id: new ObjectId(itemId) },
+    { $set: { quantity } }
+  );
   return result;
 };
 
 const removeCartItemFromDB = async (itemId) => {
+  console.log(itemId);
+
   const result = await cartCollection.deleteOne({
-    _id: `${itemId}`,
+    _id: new ObjectId(itemId),
   });
   return result;
 };

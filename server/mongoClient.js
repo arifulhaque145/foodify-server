@@ -1,8 +1,20 @@
-const { MongoClient } = require("mongodb");
+const { MongoClient, ServerApiVersion } = require("mongodb");
 require("dotenv").config();
 
 const uri = process.env.DB_URI;
+
+// Offline Server Client
 const client = new MongoClient(uri);
+
+// Online Server Client
+// const client = new MongoClient(uri, {
+//   serverApi: {
+//     version: ServerApiVersion.v1,
+//     strict: true,
+//     deprecationErrors: true,
+//   },
+// });
+
 const foodifyDB = client.db(`${process.env.DB_NAME}`);
 
 const connectDB = async () => {
