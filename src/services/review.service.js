@@ -1,11 +1,11 @@
-const { foodifyDB } = require("../mongoClient");
+const { foodifyDB } = require("../config/mongoClient");
 const { ObjectId } = require("mongodb");
 
 const reviewCollection = foodifyDB.collection("reviews");
 
 const getAllReviewByUserFromDB = async (id) => {
   const reviews = await reviewCollection
-    .find({ _id: new ObjectId(id) })
+    .find({ userId: new ObjectId(id) })
     .toArray();
   return reviews;
 };
@@ -22,12 +22,10 @@ const addOneReviewToDB = async (userId, foodItemId, rating, comment) => {
   return result;
 };
 
-const updateOneReviewFromDB = async (userId, reviewData) => {
-  const filter = { _id: new ObjectId(userId) };
+const updateOneReviewFromDB = async (reviewId, reviewData) => {
+  const filter = { _id: new ObjectId(reviewId) };
   const updateDoc = {
-    $set: {
-      reviewData,
-    },
+    $set: reviewData,
   };
   const updatedReview = await reviewCollection.updateOne(filter, updateDoc);
   return updatedReview;

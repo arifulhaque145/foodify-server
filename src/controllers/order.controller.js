@@ -40,7 +40,7 @@ const updateOneOrder = async (req, res) => {
   } catch (err) {
     res
       .status(500)
-      .json({ message: "Failed to get orders", error: err.message });
+      .json({ message: "Failed to update order", error: err.message });
   }
 };
 
@@ -48,8 +48,8 @@ const insertOneOrder = async (req, res) => {
   const orderItem = req.body;
 
   try {
-    insertOneOrderFromDB(orderItem);
-    res.status(201).json({ message: "Order registered successfully" });
+    await insertOneOrderFromDB(orderItem);
+    res.status(201).json({ message: "Order placed successfully" });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
@@ -57,9 +57,9 @@ const insertOneOrder = async (req, res) => {
 
 const deleteOneOrder = async (req, res) => {
   try {
-    const deleted = await deleteOneOrderFromDB(req.params.id);
-    if (!deleted) return res.status(404).json({ message: "Order not found" });
-    res.status(201).json({ message: "Order deleted successfully" });
+    const result = await deleteOneOrderFromDB(req.params.id);
+    if (result.deletedCount === 0) return res.status(404).json({ message: "Order not found" });
+    res.status(200).json({ message: "Order deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }

@@ -23,7 +23,7 @@ const addItemToCart = async (req, res) => {
   const cartItem = req.body;
 
   try {
-    addItemToCartToDB(cartItem);
+    await addItemToCartToDB(cartItem);
     res.status(201).json({ message: "Cart item added successfully" });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
@@ -35,8 +35,8 @@ const updateItemToCart = async (req, res) => {
   const quantity = req.body.quantity;
 
   try {
-    updateItemCartToDB({ itemId, quantity });
-    res.status(201).json({ message: "Cart item added successfully" });
+    await updateItemCartToDB({ itemId, quantity });
+    res.status(200).json({ message: "Cart item updated successfully" });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
@@ -45,10 +45,10 @@ const updateItemToCart = async (req, res) => {
 const removeCartItem = async (req, res) => {
   const itemId = req.params.id;
   try {
-    const deleted = await removeCartItemFromDB(itemId);
-    if (!deleted)
+    const result = await removeCartItemFromDB(itemId);
+    if (result.deletedCount === 0)
       return res.status(404).json({ message: "Cart item not found" });
-    res.status(201).json({ message: "Cart item removed successfully" });
+    res.status(200).json({ message: "Cart item removed successfully" });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
@@ -56,10 +56,10 @@ const removeCartItem = async (req, res) => {
 
 const clearCart = async (req, res) => {
   try {
-    const deleted = await clearCartFromDB(req.params.id);
-    if (!deleted)
+    const result = await clearCartFromDB(req.params.id);
+    if (result.deletedCount === 0)
       return res.status(404).json({ message: "Cart items not found" });
-    res.status(201).json({ message: "Cart cleared successfully" });
+    res.status(200).json({ message: "Cart cleared successfully" });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }

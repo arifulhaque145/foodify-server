@@ -1,5 +1,6 @@
 const multer = require("multer");
 const path = require("path");
+const jwt = require("jsonwebtoken");
 
 // Token Verification
 const verifyToken = (req, res, next) => {
@@ -9,7 +10,7 @@ const verifyToken = (req, res, next) => {
     return res.status(401).send({ message: "unauthorized access" });
   }
 
-  jwt.verifyToken(token, process.env.ACCESS_TOKEN_SECRET, (error, decoded) => {
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (error, decoded) => {
     if (error) {
       return res.status(401).send({ message: "unauthorized access" });
     }

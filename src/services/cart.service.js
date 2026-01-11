@@ -1,5 +1,5 @@
 const { ObjectId } = require("mongodb");
-const { foodifyDB } = require("../mongoClient");
+const { foodifyDB } = require("../config/mongoClient");
 
 const cartCollection = foodifyDB.collection("carts");
 

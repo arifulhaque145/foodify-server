@@ -1,29 +1,26 @@
-const bcrypt = require("bcrypt");
-const { foodifyDB } = require("../mongoClient");
+const { foodifyDB } = require("../config/mongoClient");
 const { ObjectId } = require("mongodb");
 
 const orderCollection = foodifyDB.collection("orders");
 
 const getAllOrdersFromDB = async (userEmail) => {
-  const foods = await orderCollection.find({ user: userEmail }).toArray();
-  return foods;
+  const orders = await orderCollection.find({ user: userEmail }).toArray();
+  return orders;
 };
 
 const getOneOrderFromDB = async (orderId) => {
   const query = { _id: new ObjectId(orderId) };
-  const order = await orderCollection.find(query).toArray();
+  const order = await orderCollection.findOne(query);
   return order;
 };
 
-const updateOneOrderFromDB = async (foodId, foodData) => {
-  const filter = { _id: new ObjectId(foodId) };
+const updateOneOrderFromDB = async (orderId, orderData) => {
+  const filter = { _id: new ObjectId(orderId) };
   const updateDoc = {
-    $set: {
-      foodData,
-    },
+    $set: orderData,
   };
-  const updatedfood = await orderCollection.updateOne(filter, updateDoc);
-  return updatedfood;
+  const updatedOrder = await orderCollection.updateOne(filter, updateDoc);
+  return updatedOrder;
 };
 
 const insertOneOrderFromDB = async (order) => {

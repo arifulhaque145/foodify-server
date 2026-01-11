@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const { foodifyDB } = require("../mongoClient");
+const { foodifyDB } = require("../config/mongoClient");
 const { ObjectId } = require("mongodb");
 
 const userCollection = foodifyDB.collection("users");
@@ -11,16 +11,14 @@ const getAllUsersFromDB = async () => {
 
 const getOneUserFromDB = async (userId) => {
   const query = { _id: new ObjectId(userId) };
-  const user = await userCollection.find(query).toArray();
+  const user = await userCollection.findOne(query);
   return user;
 };
 
 const updateOneUserFromDB = async (userId, userData) => {
   const filter = { _id: new ObjectId(userId) };
   const updateDoc = {
-    $set: {
-      userData,
-    },
+    $set: userData,
   };
   const updatedUser = await userCollection.updateOne(filter, updateDoc);
   return updatedUser;
@@ -28,7 +26,7 @@ const updateOneUserFromDB = async (userId, userData) => {
 
 const insertOneUserFromDB = async (name, email, password = "f123", role) => {
   const userExists = await userCollection.findOne({ email });
-  if (userExists) return res.status(400).json({ msg: "User already exists" });
+  if (userExists) throw new Error("User already exists");
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -56,7 +54,7 @@ const makeUserAdminFromDB = async (id) => {
 };
 
 const loginUserFromDB = async (email) => {
-  const result = await authService.findUserByEmail(email);
+  const result = await userCollection.findOne({ email });
   return result;
 };
 

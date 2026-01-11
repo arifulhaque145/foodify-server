@@ -39,16 +39,20 @@ const updateOneFood = async (req, res) => {
   } catch (err) {
     res
       .status(500)
-      .json({ message: "Failed to get foods", error: err.message });
+      .json({ message: "Failed to update food", error: err.message });
   }
 };
 
 const insertOneFood = async (req, res) => {
   const { item, catagory, desc, price } = req.body;
+  const ownerEmail = req.user.email;
   const image = req.file ? `/uploads/${req.file.filename}` : null;
 
   try {
-    insertOneFoodFromDB(item, catagory, desc, image, price);
+    if (!image) {
+      return res.status(400).json({ message: "Image is required" });
+    }
+    await insertOneFoodFromDB(item, catagory, desc, image, price, ownerEmail);
     res.status(201).json({ message: "Food registered successfully" });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
@@ -57,9 +61,9 @@ const insertOneFood = async (req, res) => {
 
 const deleteOneFood = async (req, res) => {
   try {
-    const deleted = await deleteOneFoodFromDB(req.params.id);
-    if (!deleted) return res.status(404).json({ message: "Food not found" });
-    res.status(201).json({ message: "Food registered successfully" });
+    const result = await deleteOneFoodFromDB(req.params.id);
+    if (result.deletedCount === 0) return res.status(404).json({ message: "Food not found" });
+    res.status(200).json({ message: "Food deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }

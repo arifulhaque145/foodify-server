@@ -26,17 +26,17 @@ const updateOneReview = async (req, res) => {
   } catch (err) {
     res
       .status(500)
-      .json({ message: "Failed to get reviews", error: err.message });
+      .json({ message: "Failed to update review", error: err.message });
   }
 };
 
 const addOneReview = async (req, res) => {
-  const { item, catagory, desc, price } = req.body;
-  const image = req.file ? `/uploads/${req.file.filename}` : null;
+  const foodId = req.params.id;
+  const { userId, rating, comment } = req.body;
 
   try {
-    addOneReviewToDB(item, catagory, desc, image, price);
-    res.status(201).json({ message: "Food registered successfully" });
+    await addOneReviewToDB(userId, foodId, rating, comment);
+    res.status(201).json({ message: "Review added successfully" });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
@@ -44,9 +44,9 @@ const addOneReview = async (req, res) => {
 
 const removeOneReview = async (req, res) => {
   try {
-    const deleted = await removeOneReviewFromDB(req.params.id);
-    if (!deleted) return res.status(404).json({ message: "Food not found" });
-    res.status(201).json({ message: "Food registered successfully" });
+    const result = await removeOneReviewFromDB(req.params.id);
+    if (result.deletedCount === 0) return res.status(404).json({ message: "Review not found" });
+    res.status(200).json({ message: "Review removed successfully" });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }

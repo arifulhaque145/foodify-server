@@ -1,4 +1,4 @@
-const { foodifyDB } = require("../mongoClient");
+const { foodifyDB } = require("../config/mongoClient");
 const { ObjectId } = require("mongodb");
 
 const foodCollection = foodifyDB.collection("food-items");
@@ -17,17 +17,15 @@ const getOneFoodFromDB = async (foodId) => {
 const updateOneFoodFromDB = async (foodId, foodData) => {
   const filter = { _id: new ObjectId(foodId) };
   const updateDoc = {
-    $set: {
-      foodData,
-    },
+    $set: foodData,
   };
   const updatedfood = await foodCollection.updateOne(filter, updateDoc);
   return updatedfood;
 };
 
-const insertOneFoodFromDB = async (item, catagory, desc, image, price) => {
-  const foodExists = await foodCollection.findOne({ email });
-  if (foodExists) return res.status(400).json({ msg: "Food already exists" });
+const insertOneFoodFromDB = async (item, catagory, desc, image, price, ownerEmail) => {
+  const foodExists = await foodCollection.findOne({ item });
+  if (foodExists) throw new Error("Food already exists");
 
   const newFood = {
     item,
@@ -35,6 +33,7 @@ const insertOneFoodFromDB = async (item, catagory, desc, image, price) => {
     desc,
     image,
     price,
+    ownerEmail,
     createdAt: new Date(),
   };
   await foodCollection.insertOne(newFood);
